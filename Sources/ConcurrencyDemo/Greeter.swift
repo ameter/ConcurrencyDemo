@@ -17,15 +17,14 @@ class Greeter {
         print("hi")
     }
     
-    func sayHiOrBye() async throws {
+    func sayHiOrBye() async {
         try? await Task.sleep(nanoseconds: NSEC_PER_SEC * 3)
         
-        guard !Task.isCancelled else {
+        if !Task.isCancelled {
+            print("hi")
+        } else {
             print("bye")
-            return
         }
-        
-        print("hi")
     }
     
     func sayHello() {

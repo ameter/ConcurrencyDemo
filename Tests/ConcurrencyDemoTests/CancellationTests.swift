@@ -33,12 +33,11 @@ final class CancellationTests: XCTestCase {
     
     func testCancelCustom() async throws {
         let task = Task {
-            try await greeter.sayHiOrBye()
+            await greeter.sayHiOrBye()
         }
         
         task.cancel()
-        
-        try await task.value
+        await task.value
     }
     
     func testSyncFunction() {

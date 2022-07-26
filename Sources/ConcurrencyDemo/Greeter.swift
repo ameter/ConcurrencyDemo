@@ -9,8 +9,22 @@ import Foundation
 
 class Greeter {
     
-    func sayHi() async {
+    func sayHi() async throws {
         try? await Task.sleep(nanoseconds: NSEC_PER_SEC * 3)
+        
+        try Task.checkCancellation()
+        
+        print("hi")
+    }
+    
+    func sayHiOrBye() async throws {
+        try? await Task.sleep(nanoseconds: NSEC_PER_SEC * 3)
+        
+        guard !Task.isCancelled else {
+            print("bye")
+            return
+        }
+        
         print("hi")
     }
     

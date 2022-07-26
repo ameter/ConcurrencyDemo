@@ -31,4 +31,12 @@ class Greeter {
     func sayHello() {
         print("hello")
     }
+    
+    func sayHelloOrGoodbye() {
+        if !Task.isCancelled {
+            print("hello")
+        } else {
+            print("goodbye")
+        }
+    }
 }

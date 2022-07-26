@@ -40,4 +40,16 @@ final class CancellationTests: XCTestCase {
         
         try await task.value
     }
+    
+    func testSyncFunction() {
+        greeter.sayHelloOrGoodbye()
+    }
+    
+    func testCancelSyncFunction() async {
+        let task = Task {
+            greeter.sayHelloOrGoodbye()
+        }
+        task.cancel()
+        await task.value
+    }
 }

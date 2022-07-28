@@ -13,12 +13,15 @@ class TaskQueueTests: XCTestCase {
     
     let taskQueue = TaskQueue<Void>()
     
-    func testSync() throws {
-        Task {
-            await taskQueue.sync {
-                await self.call()
-            }
+    func testSync() async throws {
+        print("starting")
+        
+        try await taskQueue.sync {
+            try? await Task.sleep(nanoseconds: 3 * NSEC_PER_SEC)
+            await self.call()
         }
+        
+        print("done")
     }
     
     func testAsync() throws {
@@ -29,7 +32,7 @@ class TaskQueueTests: XCTestCase {
     
     func testSyncThrows() throws {
         Task {
-            await taskQueue.sync {
+            try await taskQueue.sync {
                 do {
                     try await self.throwingCall()
                 } catch {
@@ -37,14 +40,14 @@ class TaskQueueTests: XCTestCase {
                 }
             }
         }
-        
-        func testAsyncThrows() throws {
-            taskQueue.async {
-                do {
-                    try await self.throwingCall()
-                } catch {
-                    print(error)
-                }
+    }
+    
+    func testAsyncThrows() throws {
+        taskQueue.async {
+            do {
+                try await self.throwingCall()
+            } catch {
+                print(error)
             }
         }
     }

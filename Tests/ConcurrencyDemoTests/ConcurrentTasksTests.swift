@@ -35,13 +35,14 @@ class ConcurrentTasksTests: XCTestCase {
     }
 
     func testTaskGroup() async throws {
-        await withThrowingTaskGroup(of: Void.self) { group in
+        try await withThrowingTaskGroup(of: Void.self) { group in
             group.addTask { [weak self] in
                 try await self?.greeter.sayHi()
             }
             group.addTask { [weak self] in
                 try await self?.greeter.sayHi()
             }
+            try await group.waitForAll()
         }
         print("done")
     }

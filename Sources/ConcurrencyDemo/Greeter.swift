@@ -27,6 +27,15 @@ class Greeter {
         }
     }
     
+    func sayHiWithCustomCleanup() throws {
+        guard !Task.isCancelled else {
+            print("not going to say hello")
+            throw CancellationError()
+        }
+        
+        print("hi")
+    }
+    
     func sayHello() {
         print("hello")
     }

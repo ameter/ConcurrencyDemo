@@ -11,8 +11,8 @@ import XCTest
 final class AsyncSequenceTests: XCTestCase {
     let sequence = Doubles()
 
-    func testExample() async {
-        for await number in sequence {
+    func testExample() async throws {
+        for try await number in sequence {
             print(number)
         }
     }

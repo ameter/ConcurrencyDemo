@@ -6,19 +6,21 @@
 import Foundation
 
 @available(iOS 13.0, *)
-actor TaskQueue<Success> {
-    
+public actor TaskQueue<Success> {
     private var previousTask: Task<Success, Error>?
+    
+    public init() {}
 
-    func sync(block: @Sendable @escaping () async throws -> Success) async throws {
-        previousTask = Task { [previousTask] in
+    public func sync(block: @Sendable @escaping () async throws -> Success) async throws -> Success {
+        let currentTask: Task<Success, Error> = Task { [previousTask] in
             _ = await previousTask?.result
             return try await block()
         }
-        _ = try await previousTask?.value
+        previousTask = currentTask
+        return try await currentTask.value
     }
 
-    nonisolated func async(block: @Sendable @escaping () async throws -> Success) rethrows {
+    public nonisolated func async(block: @Sendable @escaping () async throws -> Success) rethrows {
         Task {
             try await sync(block: block)
         }

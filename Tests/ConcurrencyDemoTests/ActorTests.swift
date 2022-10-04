@@ -8,6 +8,19 @@
 import XCTest
 @testable import ConcurrencyDemo
 
+internal protocol NoDep {
+    func noway()
+}
+extension Blah: NoDep {}
+
+
+public class Blah {
+    @available(*, deprecated, message: "nope!")
+    public func noway() {
+        print("no way!")
+    }
+}
+
 class ActorTests: XCTestCase {
     let hanks = TomHanks()
     var greeter = Greeter()
@@ -44,6 +57,14 @@ class ActorTests: XCTestCase {
             print(self.script.castAway)
         }
     }
+    
+@available(*, deprecated, message: "nope!")
+func testNoWay() {
+    let blah = Blah()
+    (blah as NoDep).noway()
+}
+    
+
 }
 
 class Script {

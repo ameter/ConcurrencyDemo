@@ -30,6 +30,7 @@ class AsyncPublisherTests: XCTestCase {
         }
         
         await waitForExpectations(timeout: 10)
+        sink.cancel()
     }
     
     func testSequencePublisher() async throws {
@@ -53,7 +54,7 @@ class AsyncPublisherTests: XCTestCase {
         
         
         await waitForExpectations(timeout: 1)
-        //sink.cancel()
+        sink.cancel()
     }
     
     func testFuture() async throws {

@@ -35,7 +35,7 @@ class TaskQueueTests: XCTestCase {
             
             try await taskQueue.sync {
                 try? await Task.sleep(nanoseconds: 7 * NSEC_PER_SEC)
-                await self.call(1)
+                try? await self.call(1)
             }
             
             print("done 1")
@@ -47,7 +47,7 @@ class TaskQueueTests: XCTestCase {
             
             try await taskQueue.sync {
                 try? await Task.sleep(nanoseconds: 5 * NSEC_PER_SEC)
-                await self.call(2)
+                try? await self.call(2)
             }
             
             print("done 2")
@@ -59,7 +59,7 @@ class TaskQueueTests: XCTestCase {
             
             try await taskQueue.sync {
                 try? await Task.sleep(nanoseconds: 3 * NSEC_PER_SEC)
-                await self.call(3)
+                try? await self.call(3)
             }
             
             print("done 3")
@@ -71,7 +71,7 @@ class TaskQueueTests: XCTestCase {
             
             try await taskQueue.sync {
                 try? await Task.sleep(nanoseconds: 1 * NSEC_PER_SEC)
-                await self.call(4)
+                try? await self.call(4)
             }
             
             print("done 4")
@@ -120,7 +120,10 @@ class TaskQueueTests: XCTestCase {
         throw taskError.boom
     }
     
-    private func call(_ number: Int) async {
+    private func call(_ number: Int) async throws {
+        if number == 2 {
+            throw taskError.boom
+        }
         print("Function: \(#function) \(number)")
     }
 }

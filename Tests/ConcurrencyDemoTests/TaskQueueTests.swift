@@ -23,7 +23,7 @@ class TaskQueueTests: XCTestCase {
         
         print("done")
     }
-    
+        
     func testMultipleCalls() {
         let finished1 = expectation(description: "finished 1")
         let finished2 = expectation(description: "finished 2")
@@ -78,7 +78,19 @@ class TaskQueueTests: XCTestCase {
             finished4.fulfill()
         }
         
-        waitForExpectations(timeout: 30)
+        waitForExpectations(timeout: 100)
+    }
+    
+    func testReturns() async throws {
+        let value = 5
+        let taskQueue = TaskQueue<Int>()
+        
+        let response = try await taskQueue.sync {
+            return value
+        }
+        
+        print(response)
+        XCTAssertEqual(response, value)
     }
     
     func testAsync() throws {
@@ -124,7 +136,37 @@ class TaskQueueTests: XCTestCase {
         if number == 2 {
             throw taskError.boom
         }
+        
+        if number == 1 {
+            try await waitForSequence()
+        }
         print("Function: \(#function) \(number)")
+    }
+    
+    func waitForSequence() async throws {
+        let input = Array(1...10)
+        let sequence = AmplifyAsyncSequence<Int>()
+        
+        Task {
+            await send(input: input, sequence: sequence)
+        }
+        
+        for try await value in sequence {
+            print("value: \(value)")
+        }
+    }
+    
+    private func send<Element>(input: [Element],
+                               sequence: AmplifyAsyncSequence<Element>,
+                               finish: Bool = true) async {
+        
+        for value in input {
+            try? await Task.sleep(seconds: 1)
+            sequence.send(value)
+        }
+        if finish {
+            sequence.finish()
+        }
     }
 }
 
